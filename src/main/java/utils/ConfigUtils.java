@@ -1,10 +1,8 @@
 package utils;
 
+import java.io.FileReader;
 import java.io.FileWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
+import java.nio.CharBuffer;
 
 public class ConfigUtils {
 
@@ -14,10 +12,16 @@ public class ConfigUtils {
     }
 
     public static String getValue() {
-        Path path = Paths.get(FILE_NAME);
         try {
-            List<String> lines = Files.readAllLines(path);
-            return lines.get(0);
+            FileReader reader = new FileReader(FILE_NAME);
+            CharBuffer buffer = CharBuffer.allocate(20);
+            int count = reader.read(buffer);
+            if(count == -1) {
+                updateValue("0");
+                return "0";
+            }
+            buffer.flip();
+            return buffer.toString();
         }catch (Exception e) {
             updateValue("0");
             return "0";
